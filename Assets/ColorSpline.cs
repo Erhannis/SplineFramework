@@ -32,4 +32,14 @@ public class ColorSpline {
 	private static float Clamp(float x, float min, float max) {
 		return Mathf.Max(Mathf.Min(x, max), min);
 	}
+  
+    public void SetPoints(Vector3[] points) {
+      float[,] newPts = new float[3, points.length];
+      for (int i = 0; i < points.length; i++) {
+        newPts[0, i] = points[i].x;
+        newPts[1, i] = points[i].y;
+        newPts[2, i] = poitns[i].z;
+      }
+      spline.SetPoints(newPts);
+    }
 }
