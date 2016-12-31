@@ -38,7 +38,7 @@ public class ColorSpline {
       for (int i = 0; i < points.length; i++) {
         newPts[0, i] = points[i].x;
         newPts[1, i] = points[i].y;
-        newPts[2, i] = poitns[i].z;
+        newPts[2, i] = points[i].z;
       }
       spline.SetPoints(newPts);
     }
