@@ -44,6 +44,7 @@ public class BezierSpline {//: MonoBehaviour {
     }
 
     public float[] Interpolate(float t) {
+		//TODO Clamp?
         //TODO Optimize?
         int segs = (mPoints.GetLength(1) - mPointReuseCount) / (mOrder + 1 - mPointReuseCount);
         int seg = Mathf.FloorToInt(segs * t);
@@ -89,4 +90,8 @@ public class BezierSpline {//: MonoBehaviour {
         }
         return result;
     }
+
+	public static float Clamp(float x, float min, float max) {
+		return Mathf.Max(Mathf.Min(x, max), min);
+	}
 }

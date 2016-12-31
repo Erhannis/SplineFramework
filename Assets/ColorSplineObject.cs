@@ -20,7 +20,8 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
         //controlObject.AddComponent<RigidBody>();
         controlObject.transform.parent = transform;
         controlObject.transform.localPosition = new Vector3(i / 3f, i/3f, i/3f);
-        controlObject.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+		float size = 0.1f;
+			controlObject.transform.localScale = new Vector3(size, size, size);
         controlObjects.Add(controlObject);
       }
       UpdatePoints();
@@ -95,22 +96,35 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
     public void DoRender() {
         GL.PushMatrix();
         GL.Begin(GL.LINES);
-        GL.MultMatrix(transform.localToWorldMatrix);
+        //GL.MultMatrix(transform.localToWorldMatrix);
 
         lineMat.SetPass(0);
         GL.Color(new Color(1f, 1f, 1f, 1f));
 
-        float h = 0.1f;
+		/**/
+        float h = 1f / 16;
         for (float t = 0; (t + h) <= 1; t += h)
         {
             float[] pt1 = spline.spline.Interpolate(t);
-			Debug.Log(pt1[0] + " " + pt1[1] + " " + pt1[2]);
             float[] pt2 = spline.spline.Interpolate(t + h);
+			Debug.Log(pt1[0] + " " + pt1[1] + " " + pt1[2] + " -> " + pt2[0] + " " + pt2[1] + " " + pt2[2]);
             float[] color = spline.InterpolateToFARGB(t);
             GL.Color(new Color(color[0], color[1], color[2], color[3]));
             GL.Vertex3(pt1[0], pt1[1], pt1[2]);
             GL.Vertex3(pt2[0], pt2[1], pt2[2]);
         }
+		/**/
+
+		/*
+		GL.Vertex3(0, 0, 0);
+		GL.Vertex3(1, 0, 0);
+
+		GL.Vertex3(1, 0, 0);
+		GL.Vertex3(1, 1, 0);
+
+		GL.Vertex3(1, 1, 0);
+		GL.Vertex3(0, 1, 0);
+		*/
 
         float[] pt = spline.spline.Interpolate(1);
         Debug.Log(pt[0] + " " + pt[1] + " " + pt[2]);

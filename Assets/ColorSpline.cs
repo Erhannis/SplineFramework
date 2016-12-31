@@ -26,9 +26,9 @@ public class ColorSpline {
         switch (space)
         {
             case ColorSolid.RGB_CUBE:
-                float rf = Clamp(color[0], 0, 1);
-                float gf = Clamp(color[1], 0, 1);
-                float bf = Clamp(color[2], 0, 1);
+                float rf = BezierSpline.Clamp(color[0], 0, 1);
+			    float gf = BezierSpline.Clamp(color[1], 0, 1);
+			    float bf = BezierSpline.Clamp(color[2], 0, 1);
                 return new float[]{1f, rf, gf, bf};
             case ColorSolid.HSV_CUBE:
             case ColorSolid.HSV_CYLINDER:
@@ -40,10 +40,6 @@ public class ColorSpline {
         }
     }
 
-    private static float Clamp(float x, float min, float max) {
-		return Mathf.Max(Mathf.Min(x, max), min);
-	}
-  
     public void SetPoints(Vector3[] points) {
       float[,] newPts = new float[3, points.Length];
       for (int i = 0; i < points.Length; i++) {
