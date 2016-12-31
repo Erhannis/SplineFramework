@@ -18,13 +18,17 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
         //TODO Maybe different for 1st vs 2nd control points
         GameObject controlObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
         //controlObject.AddComponent<RigidBody>();
-        controlObject.transform.position = new Vector3(i / 3f, i/3f, i/3f);
+        controlObject.transform.parent = transform;
+        controlObject.transform.localPosition = new Vector3(i / 3f, i/3f, i/3f);
+        controlObject.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
         controlObjects.Add(controlObject);
       }
       UpdatePoints();
     }
   
     void Update() {
+        //TODO Remove, probably
+        UpdatePoints();
     }
   
     private void UpdatePoints() {
@@ -94,15 +98,24 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
         GL.MultMatrix(transform.localToWorldMatrix);
 
         lineMat.SetPass(0);
-        GL.Color(new Color(0f, 1f, 0f, 1f));
+        GL.Color(new Color(1f, 1f, 1f, 1f));
 
-        for (float t = 0; (t + 0.01f) <= 1; t += 0.01f)
+        float h = 0.1f;
+        for (float t = 0; (t + h) <= 1; t += h)
         {
             float[] pt1 = spline.spline.Interpolate(t);
-            float[] pt2 = spline.spline.Interpolate(t + 0.01f);
+			Debug.Log(pt1[0] + " " + pt1[1] + " " + pt1[2]);
+            float[] pt2 = spline.spline.Interpolate(t + h);
+            float[] color = spline.InterpolateToFARGB(t);
+            GL.Color(new Color(color[0], color[1], color[2], color[3]));
             GL.Vertex3(pt1[0], pt1[1], pt1[2]);
             GL.Vertex3(pt2[0], pt2[1], pt2[2]);
         }
+
+        float[] pt = spline.spline.Interpolate(1);
+        Debug.Log(pt[0] + " " + pt[1] + " " + pt[2]);
+
+		Debug.Log("blah");
 
         GL.End();
         GL.PopMatrix();
