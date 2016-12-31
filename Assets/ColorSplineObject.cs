@@ -2,10 +2,13 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class ColorSplineObject : MonoBehaviour {
+public class ColorSplineObject : MonoBehaviour, IPostRenderer {
     private ColorSpline spline;
     public List<GameObject> controlObjects;
-  
+
+    //TODO Improve material efficiency?
+    public Material lineMat;
+
     void Start() {
       spline = new ColorSpline();
       spline.spline.SetOrder(3);
@@ -83,5 +86,25 @@ public class ColorSplineObject : MonoBehaviour {
       c.transform.parent = b.transform;
       
       UpdatePoints();
+    }
+
+    public void DoRender() {
+        GL.PushMatrix();
+        GL.Begin(GL.LINES);
+        GL.MultMatrix(transform.localToWorldMatrix);
+
+        lineMat.SetPass(0);
+        GL.Color(new Color(0f, 1f, 0f, 1f));
+
+        for (float t = 0; (t + 0.01f) <= 1; t += 0.01f)
+        {
+            float[] pt1 = spline.spline.Interpolate(t);
+            float[] pt2 = spline.spline.Interpolate(t + 0.01f);
+            GL.Vertex3(pt1[0], pt1[1], pt1[2]);
+            GL.Vertex3(pt2[0], pt2[1], pt2[2]);
+        }
+
+        GL.End();
+        GL.PopMatrix();
     }
 }
