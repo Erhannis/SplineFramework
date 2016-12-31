@@ -16,7 +16,12 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
       for (int i = 0; i < 4; i++) {
         //TODO Maybe a prefab
         //TODO Maybe different for 1st vs 2nd control points
-        GameObject controlObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		GameObject controlObject;
+		if (i % 3 == 0) {
+			controlObject = GameObject.CreatePrimitive (PrimitiveType.Cube);
+		} else {
+			controlObject = GameObject.CreatePrimitive (PrimitiveType.Sphere);
+		}
         //controlObject.AddComponent<RigidBody>();
         controlObject.transform.parent = transform;
         controlObject.transform.localPosition = new Vector3(i / 3f, i/3f, i/3f);
