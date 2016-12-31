@@ -34,8 +34,8 @@ public class ColorSpline {
 	}
   
     public void SetPoints(Vector3[] points) {
-      float[,] newPts = new float[3, points.length];
-      for (int i = 0; i < points.length; i++) {
+      float[,] newPts = new float[3, points.Length];
+      for (int i = 0; i < points.Length; i++) {
         newPts[0, i] = points[i].x;
         newPts[1, i] = points[i].y;
         newPts[2, i] = points[i].z;
