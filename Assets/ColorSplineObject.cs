@@ -112,7 +112,7 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
         {
             float[] pt1 = spline.spline.Interpolate(t);
             float[] pt2 = spline.spline.Interpolate(t + h);
-			Debug.Log(pt1[0] + " " + pt1[1] + " " + pt1[2] + " -> " + pt2[0] + " " + pt2[1] + " " + pt2[2]);
+			//Debug.Log(pt1[0] + " " + pt1[1] + " " + pt1[2] + " -> " + pt2[0] + " " + pt2[1] + " " + pt2[2]);
             float[] color = spline.InterpolateToFARGB(t);
             GL.Color(new Color(color[0], color[1], color[2], color[3]));
             GL.Vertex3(pt1[0], pt1[1], pt1[2]);
@@ -131,10 +131,10 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
 		GL.Vertex3(0, 1, 0);
 		*/
 
-        float[] pt = spline.spline.Interpolate(1);
-        Debug.Log(pt[0] + " " + pt[1] + " " + pt[2]);
+        //float[] pt = spline.spline.Interpolate(1);
+        //Debug.Log(pt[0] + " " + pt[1] + " " + pt[2]);
 
-		Debug.Log("blah");
+		//Debug.Log("blah");
 
         GL.End();
         GL.PopMatrix();
