@@ -4,30 +4,59 @@ using System.Collections.Generic;
 
 public class ColorSplineObject : MonoBehaviour, IPostRenderer {
     private ColorSpline spline;
+    public GameObject firstControlPrefab;
+    public GameObject secondControlPrefab;
     public List<GameObject> controlObjects;
+
+    private GameObject targetMarker;
 
     //TODO Improve material efficiency?
     public Material lineMat;
 
+    private const float CONTROL_SIZE = 0.1f;
+
     void Start() {
+        targetMarker = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        targetMarker.GetComponent<Renderer>().material.color = Color.green;
+        //TODO Could make transparent
+        targetMarker.transform.parent = transform;
+        targetMarker.transform.localPosition = new Vector3();
+        targetMarker.transform.localScale = new Vector3(CONTROL_SIZE, CONTROL_SIZE, CONTROL_SIZE);
+        targetMarker.SetActive(false);
+
         spline = new ColorSpline();
         spline.spline.SetOrder(3);
         controlObjects = new List<GameObject>();
         for (int i = 0; i < 4; i++) {
-            //TODO Maybe a prefab
-            //TODO Maybe different for 1st vs 2nd control points
             GameObject controlObject;
             if (i % 3 == 0) {
-                controlObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                controlObject = Instantiate<GameObject>(firstControlPrefab, transform);
             } else {
-                controlObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                controlObject = Instantiate<GameObject>(secondControlPrefab, transform);
             }
-            //controlObject.AddComponent<RigidBody>();
-            controlObject.transform.parent = transform;
             controlObject.transform.localPosition = new Vector3(i / 3f, i / 3f, i / 3f);
-            float size = 0.1f;
-            controlObject.transform.localScale = new Vector3(size, size, size);
+            controlObject.transform.localScale = new Vector3(CONTROL_SIZE, CONTROL_SIZE, CONTROL_SIZE);
             controlObjects.Add(controlObject);
+        }
+        // Make 2nd controls children of the 1sts
+        for (int i = 1; i < (4-1); i++) {
+            GameObject controlObject;
+            if (i % 3 == 0) {
+                // 1st control
+            } else {
+                // 2nd control
+                //TODO Could add support for greater order
+                controlObject = controlObjects[i];
+                GameObject firstControl;
+                if (i % 3 == 1) {
+                    // back one
+                    firstControl = controlObjects[i - 1];
+                } else {
+                    // i % 3 == 2
+                    firstControl = controlObjects[i + 1];
+                }
+                controlObject.transform.SetParent(firstControl.transform, true);
+            }
         }
         UpdatePoints();
     }
@@ -84,16 +113,21 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
         GameObject after = controlObjects[i + 1];
 
         float[] pos = spline.spline.Interpolate(t);
-        GameObject b = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        b.transform.position = new Vector3(pos[0], pos[1], pos[2]);
+        GameObject b = Instantiate<GameObject>(firstControlPrefab, transform);
+        b.transform.localPosition = new Vector3(pos[0], pos[1], pos[2]);
+        b.transform.localScale = new Vector3(CONTROL_SIZE, CONTROL_SIZE, CONTROL_SIZE);
 
-        GameObject a = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        a.transform.position = new Vector3(1, 0, 0);
-        a.transform.parent = b.transform;
+        GameObject a = Instantiate<GameObject>(secondControlPrefab, b.transform);
+        a.transform.localPosition = new Vector3(3 * CONTROL_SIZE, 0, 0);
+        a.transform.localScale = new Vector3(CONTROL_SIZE, CONTROL_SIZE, CONTROL_SIZE);
 
-        GameObject c = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        c.transform.position = new Vector3(-1, 0, 0);
-        c.transform.parent = b.transform;
+        GameObject c = Instantiate<GameObject>(secondControlPrefab, b.transform);
+        c.transform.localPosition = new Vector3(-3 * CONTROL_SIZE, 0, 0);
+        c.transform.localScale = new Vector3(CONTROL_SIZE, CONTROL_SIZE, CONTROL_SIZE);
+
+        controlObjects.Insert(gp, c);
+        controlObjects.Insert(gp, b);
+        controlObjects.Insert(gp, a);
 
         UpdatePoints();
     }

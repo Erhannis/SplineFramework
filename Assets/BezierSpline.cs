@@ -32,7 +32,7 @@ public class BezierSpline {//: MonoBehaviour {
             throw new System.Exception("invalid # of points for order " + mOrder + " curve with " + mPointReuseCount + " point reuse");
         }
         int segs = (pts - mPointReuseCount) / (mOrder + 1 - mPointReuseCount);
-        Debug.Log("Segments: " + segs);
+        //Debug.Log("Segments: " + segs);
         this.mPoints = points;
     }
 
