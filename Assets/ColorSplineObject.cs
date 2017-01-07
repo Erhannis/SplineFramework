@@ -129,13 +129,15 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
         b.transform.localScale = new Vector3(CONTROL_SIZE, CONTROL_SIZE, CONTROL_SIZE);
 
         //TODO Something's wrong with the sizes
-        GameObject a = Instantiate<GameObject>(secondControlPrefab, b.transform);
-        a.transform.localPosition = new Vector3(3 * CONTROL_SIZE, 0, 0);
-        //a.transform.localScale = new Vector3(CONTROL_SIZE, CONTROL_SIZE, CONTROL_SIZE);
+        GameObject a = Instantiate<GameObject>(secondControlPrefab);
+        a.transform.SetParent(transform, false);
+        a.transform.SetParent(b.transform, true);
+        a.transform.localPosition = new Vector3(2, 0, 0);
 
-        GameObject c = Instantiate<GameObject>(secondControlPrefab, b.transform);
-        c.transform.localPosition = new Vector3(-3 * CONTROL_SIZE, 0, 0);
-        //c.transform.localScale = new Vector3(CONTROL_SIZE, CONTROL_SIZE, CONTROL_SIZE);
+        GameObject c = Instantiate<GameObject>(secondControlPrefab);
+        c.transform.SetParent(transform, false);
+        c.transform.SetParent(b.transform, true);
+        c.transform.localPosition = new Vector3(-2, 0, 0);
 
         controlObjects.Insert(target, c);
         controlObjects.Insert(target, b);
