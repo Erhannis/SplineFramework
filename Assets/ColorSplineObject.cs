@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Valve.VR;
 
 public class ColorSplineObject : MonoBehaviour, IPostRenderer {
     private ColorSpline spline;
@@ -141,6 +142,48 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
         controlObjects.Insert(target, a);
 
         UpdatePoints();
+    }
+
+    public void DeletePointClosestToRightController() {
+        //TODO Store controller manager?
+        Vector3 pos = FindObjectOfType<SteamVR_ControllerManager>().right.transform.position;
+        DeletePoint(pos);
+    }
+
+    public void DeletePoint(Vector3 pos) {
+        //TODO Update for different order, reuse
+        int closestI = FindClosestFirstControlIndex(pos);
+        if (closestI > -1) {
+            if (controlObjects.Count > 4) {
+                GameObject firstControl = controlObjects[closestI];
+                if (closestI == 0) {
+                    // Remove first two
+                    controlObjects.RemoveRange(0, 2);
+                } else if (closestI == (controlObjects.Count - 1)) {
+                    // Remove last two
+                    controlObjects.RemoveRange(controlObjects.Count - 2, 2);
+                } else {
+                    // Remove three from middle
+                    controlObjects.RemoveRange(closestI - 1, 3);
+                }
+                Destroy(firstControl);
+                UpdatePoints();
+            }
+        }
+    }
+
+    public int FindClosestFirstControlIndex(Vector3 pos) {
+        //TODO Update for different order, reuse
+        int closestI = -1;
+        float distSqr = float.PositiveInfinity;
+        for (int i = 0; i < controlObjects.Count; i += 3) {
+            float sqrMag = (controlObjects[i].transform.position - pos).sqrMagnitude;
+            if (sqrMag < distSqr) {
+                distSqr = sqrMag;
+                closestI = i;
+            }
+        }
+        return closestI;
     }
 
     public void DoRender() {
