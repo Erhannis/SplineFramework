@@ -81,6 +81,7 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
     }
 
     public void ShowTargetMarker(Vector3 near) {
+        //TODO Make this update as controller moves?
         float t = FindClosestT(near);
         float[] pos = spline.spline.Interpolate(t);
         targetMarker.transform.position = new Vector3(pos[0], pos[1], pos[2]);
@@ -157,18 +158,25 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
         int closestI = FindClosestFirstControlIndex(pos);
         if (closestI > -1) {
             if (controlObjects.Count > 4) {
-                GameObject firstControl = controlObjects[closestI];
                 if (closestI == 0) {
-                    // Remove first two
-                    controlObjects.RemoveRange(0, 2);
+                    // Remove first three
+                    Destroy(controlObjects[0]);
+                    Destroy(controlObjects[1]);
+                    Destroy(controlObjects[2]);
+                    controlObjects.RemoveRange(0, 3);
                 } else if (closestI == (controlObjects.Count - 1)) {
-                    // Remove last two
-                    controlObjects.RemoveRange(controlObjects.Count - 2, 2);
+                    // Remove last three
+                    Destroy(controlObjects[controlObjects.Count - 3]);
+                    Destroy(controlObjects[controlObjects.Count - 2]);
+                    Destroy(controlObjects[controlObjects.Count - 1]);
+                    controlObjects.RemoveRange(controlObjects.Count - 3, 3);
                 } else {
                     // Remove three from middle
+                    Destroy(controlObjects[closestI - 1]);
+                    Destroy(controlObjects[closestI]);
+                    Destroy(controlObjects[closestI + 1]);
                     controlObjects.RemoveRange(closestI - 1, 3);
                 }
-                Destroy(firstControl);
                 UpdatePoints();
             }
         }
@@ -197,7 +205,7 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
         GL.Color(new Color(1f, 1f, 1f, 1f));
 
         /**/
-        float h = 1f / 16;
+        float h = 1f / (1 << 8);
         for (float t = 0; (t + h) <= 1; t += h) {
             float[] pt1 = spline.spline.Interpolate(t);
             float[] pt2 = spline.spline.Interpolate(t + h);

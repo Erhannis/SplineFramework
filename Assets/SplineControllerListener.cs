@@ -24,9 +24,6 @@ public class SplineControllerListener : MonoBehaviour {
 
         GetComponent<VRTK_ControllerEvents>().TriggerAxisChanged += new ControllerInteractionEventHandler(DoTriggerAxisChanged);
 
-        GetComponent<VRTK_ControllerEvents>().ApplicationMenuPressed += new ControllerInteractionEventHandler(DoApplicationMenuPressed);
-        GetComponent<VRTK_ControllerEvents>().ApplicationMenuReleased += new ControllerInteractionEventHandler(DoApplicationMenuReleased);
-
         GetComponent<VRTK_ControllerEvents>().GripPressed += new ControllerInteractionEventHandler(DoGripPressed);
         GetComponent<VRTK_ControllerEvents>().GripReleased += new ControllerInteractionEventHandler(DoGripReleased);
 
@@ -46,7 +43,8 @@ public class SplineControllerListener : MonoBehaviour {
     private void DoTriggerPressed(object sender, ControllerInteractionEventArgs e) {
         DebugLogger(e.controllerIndex, "TRIGGER", "pressed down", e);
         triggerDown = true;
-        SteamVR_TrackedObject controller = VRTK.VRTK_DeviceFinder.ControllerByIndex(e.controllerIndex);
+        GameObject controller = VRTK.VRTK_DeviceFinder.GetControllerByIndex(e.controllerIndex, true);
+        //SteamVR_TrackedObject controller = null;
         colorSplineObject.ShowTargetMarker(controller.transform.position);
     }
 
@@ -59,17 +57,10 @@ public class SplineControllerListener : MonoBehaviour {
     private void DoTriggerAxisChanged(object sender, ControllerInteractionEventArgs e) {
         DebugLogger(e.controllerIndex, "TRIGGER", "axis changed", e);
         if (e.buttonPressure == 1) {
-            SteamVR_TrackedObject controller = VRTK.VRTK_DeviceFinder.ControllerByIndex(e.controllerIndex);
+            GameObject controller = VRTK.VRTK_DeviceFinder.GetControllerByIndex(e.controllerIndex, true);
+            //SteamVR_TrackedObject controller = null;
             colorSplineObject.AddPoint(controller.transform.position);
         }
-    }
-
-    private void DoApplicationMenuPressed(object sender, ControllerInteractionEventArgs e) {
-        DebugLogger(e.controllerIndex, "APPLICATION MENU", "pressed down", e);
-    }
-
-    private void DoApplicationMenuReleased(object sender, ControllerInteractionEventArgs e) {
-        DebugLogger(e.controllerIndex, "APPLICATION MENU", "released", e);
     }
 
     private void DoGripPressed(object sender, ControllerInteractionEventArgs e) {
