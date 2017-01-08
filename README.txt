@@ -1,6 +1,8 @@
 Unity HTC Vive framework for making splines in VR.  Currently a little specific to making color splines, because that's what I want to do with it.
 Contains VRTK, SteamVR, and "139 Vector Icons" by GDev.
 
+Oh, this (and not the 3rd party stuff) is released under the MIT license.
+
 Initialization:
 
 1. Clone the SteamVR Unity Toolkit into the same parent directory as contains this project:
