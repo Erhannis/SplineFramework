@@ -1,17 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 //TODO Maybe a plain class
 //TODO implement N-surfaces?  :)
+using System.Text;
+
+
+[Serializable]
 public class BezierSpline {//: MonoBehaviour {
-    //TODO Reverse order could improve efficiency, 40% chance
-    // dim, point
-    private float[,] mPoints;
     private int mOrder;
-    //TODO Do
-    //private bool mReuseEnds = true;
-    // Or
-    private int mPointReuseCount = 1;
+	//TODO Do
+	//private bool mReuseEnds = true;
+	// Or
+	private int mPointReuseCount = 1;
+	//TODO Reverse order could improve efficiency, 40% chance
+	// dim, point
+	private float[,] mPoints;
 
 	// Use this for initialization
 	void Start () {
@@ -93,5 +98,37 @@ public class BezierSpline {//: MonoBehaviour {
 
 	public static float Clamp(float x, float min, float max) {
 		return Mathf.Max(Mathf.Min(x, max), min);
+	}
+
+	public string ToJSON() {
+		StringBuilder sb = new StringBuilder();
+		sb.Append("{");
+		sb.Append("mOrder:" + mOrder);
+		sb.Append(", ");
+		sb.Append("mPointReuseCount:" + mPointReuseCount);
+		sb.Append(", ");
+		sb.Append("[");
+		//TODO Hmm.  Maybe I should consider flipping order.
+		for (int dim = 0; dim < 3; dim++) {
+			if (dim > 0) {
+				sb.Append(", ");
+			}
+			sb.Append("[");
+			for (int point = 0; point < mPoints.GetLength(1); point++) {
+				if (point > 0) {
+					sb.Append(", ");
+				}
+				sb.Append(mPoints[dim, point]);
+			}
+			sb.Append("]");
+		}
+		sb.Append("]");
+		sb.Append("}");
+
+		return sb.ToString();
+	}
+
+	public static BezierSpline FromJSON(string json) {
+		throw new Exception("Not yet implemented");
 	}
 }

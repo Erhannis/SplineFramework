@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections;
+using System;
+using System.Text;
 
+[Serializable]
 public class ColorSpline {
     public long id;
     public ColorSolid space;
@@ -49,4 +52,20 @@ public class ColorSpline {
       }
       spline.SetPoints(newPts);
     }
+
+	public string ToJSON() {
+		StringBuilder sb = new StringBuilder();
+		sb.Append("{");
+		sb.Append("id:" + id);
+		sb.Append(", ");
+		sb.Append("space:" + space); //TODO ToJSON?
+		sb.Append(", ");
+		sb.Append("spline:" + spline.ToJSON());
+		sb.Append("}");
+		return sb.ToString();
+	}
+
+	public static ColorSpline FromJSON(string json) {
+		throw new Exception("Not yet implemented");
+	}
 }

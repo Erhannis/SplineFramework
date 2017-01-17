@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using Valve.VR;
 
 public class ColorSplineObject : MonoBehaviour, IPostRenderer {
+	public delegate void UpdateSplineEventHandler(ColorSpline spline);
+	public event UpdateSplineEventHandler UpdateSplineEvent;
+
     private ColorSpline spline;
     public GameObject firstControlPrefab;
     public GameObject secondControlPrefab;
@@ -63,8 +66,12 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
     }
 
     void Update() {
-        //TODO Remove, probably
-        UpdatePoints();
+		foreach (GameObject controlPoint in controlObjects) {
+			if (controlPoint.GetComponent<PositionChanged>().PullChanged()) {
+				UpdatePoints();
+				break;
+			}
+		}
     }
 
     private void UpdatePoints() {
@@ -74,6 +81,7 @@ public class ColorSplineObject : MonoBehaviour, IPostRenderer {
             newPts[i] = controlObject.transform.position;
         }
         spline.SetPoints(newPts);
+		UpdateSplineEvent(spline);
     }
 
     public void Stuff() {
