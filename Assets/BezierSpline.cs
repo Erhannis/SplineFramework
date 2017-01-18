@@ -107,6 +107,7 @@ public class BezierSpline {//: MonoBehaviour {
 		sb.Append(", ");
 		sb.Append("mPointReuseCount:" + mPointReuseCount);
 		sb.Append(", ");
+		sb.Append("mPoints:");
 		sb.Append("[");
 		//TODO Hmm.  Maybe I should consider flipping order.
 		for (int dim = 0; dim < 3; dim++) {
