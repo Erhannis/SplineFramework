@@ -22,6 +22,7 @@ public class MQTT : MonoBehaviour {
 		colorSplineObject.UpdateSplineEvent += new ColorSplineObject.UpdateSplineEventHandler(OnSplineUpdate);
 		client = new MqttClient4Unity(host, port, false, null);
 		client.Connect(clientName);
+		client.MqttMsgPublishReceived += new MqttClient.MqttMsgPublishEventHandler(OnOtherMessage);
 		client.MqttMsgPublished += new MqttClient.MqttMsgPublishedEventHandler(OnMessage);
 		client.Subscribe(SPLINE_TOPIC); //TODO This isn't working
 	}
@@ -30,6 +31,11 @@ public class MQTT : MonoBehaviour {
 	{
 		Debug.Log("OnMessage " + e.ToString());
 		Debug.Log("Message id: " + e.MessageId);
+	}
+
+	private void OnOtherMessage(object sender, MqttMsgPublishEventArgs e) 
+	{
+		Debug.Log("OnOtherMessage " + e.ToString());
 	}
 
 	void OnDestroy() {
